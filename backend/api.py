@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -15,6 +16,15 @@ def create_api_app(
     settings: Settings,
 ) -> FastAPI:
     app = FastAPI(title="Meeedl.Eng Mini App API", version="0.2.0")
+
+    # CORS for Vercel frontend
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],  # Or specify Vercel domain later
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     @app.get("/")
     async def root() -> dict[str, str]:
