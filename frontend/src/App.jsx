@@ -236,7 +236,7 @@ export default function App() {
         <section className="section-card reveal">
           <h2 className="section-title">Что внутри</h2>
           <ul className="benefits-list" aria-label="Преимущества">
-            <li>Более 200 материалов для изучения английского языка.</li>
+            <li>350+ материалов для изучения английского языка.</li>
             <li>Приятное комьюнити, задания, практика и интересные интерактивы.</li>
             <li>Все идеально разбито по папкам, где нужное находится за секунду.</li>
           </ul>
@@ -244,7 +244,9 @@ export default function App() {
 
         <section className="section-card reveal">
           <h2 className="section-title">Почему сейчас</h2>
-          <p className="helper-text">Начни сегодня и почувствуй первый результат уже через 7 дней.</p>
+          <p className="helper-text">Начни сегодня и почувствуй первый результат уже через 7 дней.
+            
+          </p>
           <ul className="steps-list" aria-label="Что даст старт сегодня">
             <li>Быстрый вход в систему без хаоса.</li>
             <li>Регулярная практика с поддержкой комьюнити.</li>
