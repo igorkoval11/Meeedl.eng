@@ -244,8 +244,9 @@ export default function App() {
 
         <section className="section-card reveal">
           <h2 className="section-title">Почему сейчас</h2>
-          <p className="helper-text">Начни сегодня и почувствуй первый результат уже через 7 дней.
-            
+          <p className="helper-text">
+            Начни сегодня и почувствуй первый результат уже через 7 дней.
+            <br /><br />
           </p>
           <ul className="steps-list" aria-label="Что даст старт сегодня">
             <li>Быстрый вход в систему без хаоса.</li>
