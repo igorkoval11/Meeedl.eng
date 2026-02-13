@@ -4,7 +4,7 @@ const SUPPORT_USERNAME = "@youdaew";
 const SUPPORT_LINK = "https://t.me/youdaew";
 
 // Backend API URL - update this after deploying to PythonAnywhere
-const API_BASE_URL = "https://yourusername.pythonanywhere.com";  // <-- CHANGE THIS
+const API_BASE_URL = "https://NazarN1789.pythonanywhere.com";  // <-- CHANGE THIS
 
 const FALLBACK_PLANS = [
   {
