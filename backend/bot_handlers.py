@@ -1,5 +1,5 @@
 from aiogram import Router
-from aiogram.enums import ParseMode
+from aiogram.enums import ChatType, ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import (
     InlineKeyboardButton,
@@ -31,16 +31,25 @@ def _support_link(username: str) -> str:
 
 
 def build_start_keyboard(
-    settings: Settings, support_username: str
+    settings: Settings,
+    support_username: str,
+    use_web_app: bool,
 ) -> InlineKeyboardMarkup:
+    primary_button = (
+        InlineKeyboardButton(
+            text="Открыть Meeedl.Pack",
+            web_app=WebAppInfo(url=settings.build_webapp_url()),
+        )
+        if use_web_app
+        else InlineKeyboardButton(
+            text="Открыть Meeedl.Pack",
+            url=settings.build_webapp_url(),
+        )
+    )
+
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text="Открыть Meeedl.Pack",
-                    web_app=WebAppInfo(url=settings.build_webapp_url()),
-                )
-            ],
+            [primary_button],
             [
                 InlineKeyboardButton(
                     text=f"Вопросы: {support_username}",
@@ -49,6 +58,10 @@ def build_start_keyboard(
             ],
         ]
     )
+
+
+def _should_use_web_app(chat_type: ChatType | str) -> bool:
+    return chat_type == ChatType.PRIVATE
 
 
 def _start_text(support_username: str) -> str:
@@ -63,10 +76,14 @@ def _start_text(support_username: str) -> str:
 def create_router(settings: Settings) -> Router:
     router = Router()
     support_username = _normalize_support_username(settings.support_username)
-    keyboard = build_start_keyboard(settings, support_username)
 
     @router.message(CommandStart())
     async def handle_start(message: Message) -> None:
+        keyboard = build_start_keyboard(
+            settings,
+            support_username,
+            use_web_app=_should_use_web_app(message.chat.type),
+        )
         await message.answer(
             _start_text(support_username),
             reply_markup=keyboard,
@@ -75,6 +92,11 @@ def create_router(settings: Settings) -> Router:
 
     @router.message()
     async def handle_fallback(message: Message) -> None:
+        keyboard = build_start_keyboard(
+            settings,
+            support_username,
+            use_web_app=_should_use_web_app(message.chat.type),
+        )
         await message.answer(
             "Откройте Meeedl.Pack через кнопку ниже.",
             reply_markup=keyboard,
