@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from urllib.parse import urlparse
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,15 +13,26 @@ from backend.plans import serialize_all_plans
 logger = logging.getLogger(__name__)
 
 
+def _cors_origins(settings: Settings) -> list[str]:
+    origins = {
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    }
+    parsed = urlparse(settings.normalized_webapp_base)
+    if parsed.scheme and parsed.netloc:
+        origins.add(f"{parsed.scheme}://{parsed.netloc}")
+    return sorted(origins)
+
+
 def create_api_app(
     settings: Settings,
 ) -> FastAPI:
     app = FastAPI(title="Meeedl.Eng Mini App API", version="0.2.0")
 
-    # CORS for Vercel frontend
+    # CORS for configured Mini App origin and local frontend dev server.
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],  # Or specify Vercel domain later
+        allow_origins=_cors_origins(settings),
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

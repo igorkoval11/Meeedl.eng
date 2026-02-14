@@ -1,6 +1,6 @@
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -18,7 +18,10 @@ class Settings(BaseSettings):
     webapp_path: str = Field("/app", alias="WEBAPP_PATH")
 
     api_host: str = Field("0.0.0.0", alias="API_HOST")
-    api_port: int = Field(8000, alias="API_PORT")
+    api_port: int = Field(
+        8000,
+        validation_alias=AliasChoices("API_PORT", "PORT"),
+    )
     log_level: str = Field("info", alias="LOG_LEVEL")
 
     frontend_dist_dir: str = Field("frontend/dist", alias="FRONTEND_DIST_DIR")

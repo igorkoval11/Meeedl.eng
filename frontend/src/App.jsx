@@ -3,8 +3,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 const SUPPORT_USERNAME = "@youdaew";
 const SUPPORT_LINK = "https://t.me/youdaew";
 
-// Backend API URL - update this after deploying to PythonAnywhere
-const API_BASE_URL = "https://NazarN1789.pythonanywhere.com";  // <-- CHANGE THIS
+// Optional external API base URL (e.g. https://api.example.com).
+// If not set, the app uses same-origin requests: /api/plans.
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").trim().replace(/\/+$/, "");
 
 const FALLBACK_PLANS = [
   {
