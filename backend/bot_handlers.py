@@ -7,9 +7,13 @@ from aiogram.types import (
     Message,
     WebAppInfo,
 )
+from time import monotonic
 
 from backend.config import Settings
 from backend.emoji import EMOJI, EMOJI_FALLBACK, tg_emoji
+
+START_COOLDOWN_SECONDS = 5.0
+_START_LAST_SENT_AT: dict[int, float] = {}
 
 
 def _emoji(name: str) -> str:
@@ -64,6 +68,19 @@ def _should_use_web_app(chat_type: ChatType | str) -> bool:
     return chat_type == ChatType.PRIVATE
 
 
+def _allow_start_response(user_id: int | None) -> bool:
+    if user_id is None:
+        return True
+
+    now = monotonic()
+    previous = _START_LAST_SENT_AT.get(user_id)
+    if previous is not None and now - previous < START_COOLDOWN_SECONDS:
+        return False
+
+    _START_LAST_SENT_AT[user_id] = now
+    return True
+
+
 def _start_text(support_username: str) -> str:
     return (
         f"{_emoji('fire')} <b>Meeedl.Pack</b> — закрытое пространство для роста в английском.\n\n"
@@ -79,6 +96,10 @@ def create_router(settings: Settings) -> Router:
 
     @router.message(CommandStart())
     async def handle_start(message: Message) -> None:
+        user_id = message.from_user.id if message.from_user else None
+        if not _allow_start_response(user_id):
+            return
+
         keyboard = build_start_keyboard(
             settings,
             support_username,
